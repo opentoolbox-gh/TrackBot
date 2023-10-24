@@ -2,10 +2,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Playlist from "./pages/Playlist";
 import NavBar from "./components/NavBar";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Playlist as PlaylistInterface } from "./utils/@types";
 import { playlists as dummyPlaylists } from "./utils/data";
 import Login from "./pages/Login";
+import Footer from "./components/Footer";
 
 interface PlaylistsContextInterface {
   playlists: PlaylistInterface[];
@@ -18,19 +19,27 @@ export const PlaylistsContext = createContext<PlaylistsContextInterface>({
 });
 
 const App = () => {
-  const [playlists, setPlaylists] = useState<PlaylistInterface[]>([
-    ...dummyPlaylists,
-  ]);
+  const [playlists, setPlaylists] = useState<PlaylistInterface[]>([]);
+
+  useEffect(() => {
+    console.log("Fetching the playlists...");
+    setTimeout(() => {
+      setPlaylists(dummyPlaylists);
+    }, 2000);
+  }, []);
 
   return (
     <PlaylistsContext.Provider value={{ playlists, setPlaylists }}>
       <BrowserRouter>
+        <main className="main-content-container">
         <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/playlist/:id" element={<Playlist />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/playlist/:id" element={<Playlist />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </main>
+        <Footer />
       </BrowserRouter>
     </PlaylistsContext.Provider>
   );

@@ -9,6 +9,8 @@
   body{
     @apply h-screen;
   }
+
+  
 }
 
 body {
@@ -17,4 +19,8 @@ body {
 
 * {
   transition: inherit;
+}
+
+.main-content-container {
+  min-height: calc(100vh - 56px);
 }
