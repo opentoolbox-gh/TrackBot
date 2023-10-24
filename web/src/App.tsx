@@ -8,6 +8,7 @@ import { playlists as dummyPlaylists } from "./utils/data";
 import Login from "./pages/Login";
 import Footer from "./components/Footer";
 import NotFound from "./components/NotFound";
+import NewPlaylist from "./pages/NewPlaylist";
 
 interface PlaylistsContextInterface {
   playlists: PlaylistInterface[];
@@ -37,6 +38,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/playlist/:id" element={<Playlist />} />
+            <Route path="/playlist/new" element={<NewPlaylist />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound what="page" />} />
           </Routes>
