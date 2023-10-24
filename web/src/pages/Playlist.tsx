@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PlaylistsContext } from "../App";
 import { Playlist as PlaylistInterface } from "../utils/@types";
-import PlaylistNotFound from "../components/PlaylistNotFound";
+import NotFound from "../components/NotFound";
 import VideoCard from "../components/VideoCard";
 import StatisticsModal from "../components/StatisticsModal";
 
@@ -27,7 +27,7 @@ const Playlist = () => {
   return (
     <div className="mid-center px-4 py-2">
       {selectedPlaylist === null ? (
-        <PlaylistNotFound />
+        <NotFound what="playlist"/>
       ) : selectedPlaylist === undefined ? (
         <h1>Loading...</h1>
       ) : (
