@@ -5,6 +5,7 @@ import NavBar from "./components/NavBar";
 import { createContext, useState } from "react";
 import { Playlist as PlaylistInterface } from "./utils/@types";
 import { playlists as dummyPlaylists } from "./utils/data";
+import Login from "./pages/Login";
 
 interface PlaylistsContextInterface {
   playlists: PlaylistInterface[];
@@ -28,6 +29,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playlist/:id" element={<Playlist />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </PlaylistsContext.Provider>
