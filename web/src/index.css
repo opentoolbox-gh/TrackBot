@@ -6,4 +6,21 @@
   .mid-center {
     @apply mx-auto max-w-screen-xl;
   }
+  body{
+    @apply h-screen;
+  }
+
+  
+}
+
+body {
+  transition: .3s ease;
+}
+
+* {
+  transition: inherit;
+}
+
+.main-content-container {
+  min-height: calc(100vh - 56px);
 }
