@@ -1,4 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
+import { registerSchema } from "swaggiffy";
 
 const playlistSchema = new Schema({
     name: {
@@ -24,3 +25,5 @@ const playlistSchema = new Schema({
 const PlaylistModel = model('Playlist', playlistSchema);
 
 export default PlaylistModel;
+
+registerSchema('Playlist', playlistSchema, { orm: 'mongoose'});
