@@ -22,14 +22,8 @@ const createPlaylist = async (req: Request, res: Response, next: NextFunction) =
 
     try {
 
-        let { error, value } = await playlistCreateSchema.validateAsync(req.body);
+        let { name, thumbnail, description, videos } = await playlistCreateSchema.validateAsync(req.body);
     
-        if (error) {
-            return res.status(StatusCodes.BAD_REQUEST).json(new UnSuccessfulApiResponse(false, `${error.details.message}`));
-        }
-    
-        let { name, thumbnail, description, videos } = value;    
-
         const videos_ids = await saveVideos(videos, next);
 
         const newPlaylist = await PlaylistModel.create({ name, thumbnail, description, videos: videos_ids });
