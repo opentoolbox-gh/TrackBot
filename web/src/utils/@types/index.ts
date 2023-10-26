@@ -1,9 +1,9 @@
 export interface Playlist {
-    id: string;
-    title: string;
+    id?: string;
+    name: string;
     description: string;
     thumbnail: string;
-    link: string;
+    link?: string;
     videos: Video[];
 }
 

@@ -3,7 +3,7 @@ import { Playlist, Video } from "./@types";
 export const playlists: Playlist[] = [
   {
     id: "PLM0lb7jyj5LUKjY5F5mG4XjyvqQ0wqZ3y",
-    title: "ReactJS",
+    name: "ReactJS",
     description:
       "ReactJS is a JavaScript library for building user interfaces.",
     thumbnail: "https://i.ytimg.com/vi/4UZrsTqkcW4/maxresdefault.jpg",
@@ -73,7 +73,7 @@ export const playlists: Playlist[] = [
   },
   {
     id: "PLM0lb7jyj5LX5Z4JdQqOgGm5zqJlZU5m8",
-    title: "React Native",
+    name: "React Native",
     description:
       "React Native is a JavaScript framework for writing real, natively rendering mobile applications for iOS and Android.",
     thumbnail: "https://i.ytimg.com/vi/kGtEax1WQFg/maxresdefault.jpg",
@@ -179,7 +179,7 @@ export const playlists: Playlist[] = [
   },
   {
     id: "PLM0lb7jyj5LXyf1Y6kxjF5Vb9V9f2Qxgj",
-    title: "NodeJS",
+    name: "NodeJS",
     description:
       "Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that runs on the V8 engine and executes JavaScript code outside a web browser.",
     thumbnail: "https://i.ytimg.com/vi/zb3Qk8SG5Ms/maxresdefault.jpg",

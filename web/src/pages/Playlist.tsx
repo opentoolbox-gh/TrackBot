@@ -35,7 +35,7 @@ const Playlist = () => {
           <div className="flex flex-col  gap-4 w-full md:max-w-lg">
             <img
               src={selectedPlaylist.thumbnail}
-              alt={selectedPlaylist.title}
+              alt={selectedPlaylist.name}
               className="max-h-80 rounded w-full md:w-auto object-cover"
             />
             <p className="text-xl dark:text-white">
