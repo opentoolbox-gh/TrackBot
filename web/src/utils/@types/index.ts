@@ -1,5 +1,5 @@
 export interface Playlist {
-    id?: string;
+    _id?: string;
     name: string;
     description: string;
     thumbnail: string;
@@ -9,7 +9,7 @@ export interface Playlist {
 
 export interface Video {
     title: string;
-    link: string;
+    url: string;
     thumbnail: string;
     status?: "watched" | "watching" | "toWatch";
 }

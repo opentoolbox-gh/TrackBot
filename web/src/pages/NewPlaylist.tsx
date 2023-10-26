@@ -38,7 +38,7 @@ const NewPlaylist = () => {
       const vids = data.map((el) => {
         return {
           title: el.info.title,
-          link: el.url,
+          url: el.url,
           thumbnail: el.info.thumbnail_url,
         };
       });

@@ -20,7 +20,7 @@ const Playlist = () => {
 
   useEffect(() => {
     if (playlists) {
-      const selectedPlaylist = playlists.find((el) => el.id === id) ?? null;
+      const selectedPlaylist = playlists.find((el) => el._id === id) ?? null;
       setSelectedPlaylist(selectedPlaylist);
     }
   }, [id, playlists]);
