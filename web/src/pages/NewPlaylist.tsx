@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { AnchorHTMLAttributes } from "react";
-import { ScraperResponse, Video } from "../utils/@types";
+import React from "react";
 import VideoCard from "../components/VideoCard";
+import { ScraperResponseVideo, Video } from "../utils/@types";
 
 const NewPlaylist = () => {
   const [playlistUrl, setPlaylistUrl] = React.useState<string>("");
@@ -12,26 +12,20 @@ const NewPlaylist = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.get<ScraperResponse>(
-        `https://10downloader.com/playlist?v=${playlistUrl}`
-        );
+      const { data } = await axios.get<ScraperResponseVideo[]>(
+        `https://loader.to/api/ajax/playlistJSON?format=1080&api=dfcb6d76f2f6a9894gjkege8a4ab232222&limit=100&url=${playlistUrl}`
+      );
 
-      if (!data.is_playlist) return;
+      // if (!data.is_playlist) return;
 
-      const res = document.createElement("div");
-      res.innerHTML = data.html;
       setVideos(
-        Array.from(res.querySelectorAll("table > tbody > tr")).map(
-          (el: Element): Video => ({
-            thumbnail: el.querySelector("img")!.src,
-            link:
-              el
-                .querySelector("a.btn_download")!
-                .href!.match(/\/download\?v=(.*)/)[1] ?? "",
-            title:
-              el.querySelector(".playlist__video--title")!.textContent ?? "",
-          })
-        )
+        data.map((el) => {
+          return {
+            title: el.info.title,
+            link: el.url,
+            thumbnail: el.info.thumbnail_url,
+          };
+        })
       );
     } catch (error) {
       console.log(error);
@@ -89,7 +83,9 @@ const NewPlaylist = () => {
           </button>
         </div>
       </form>
-      {videos.length && videos.map((el, i) => <VideoCard key={i} {...el} />)}
+      <div className="flex flex-col gap-2 items-center mt-4 w-full">
+        {videos.length && videos.map((el, i) => <VideoCard className="!w-full !max-w-6xl" key={i} {...el} />)}
+      </div>
     </div>
   );
 };

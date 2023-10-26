@@ -14,8 +14,11 @@ export interface Video {
     status?: "watched" | "watching" | "toWatch";
 }
 
-export interface ScraperResponse {
-    is_playlist: boolean;
-    html: string;
-    card?: string;
+export interface ScraperResponseVideo {
+    url: string;
+    info: {
+        title: string;
+        description: string;
+        thumbnail_url: string;
+    }
 }
