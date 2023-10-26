@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Playlist from "./pages/Playlist";
+import NavBar from "./components/NavBar";
+import { createContext, useEffect, useState } from "react";
+import { Playlist as PlaylistInterface } from "./utils/@types";
+import { playlists as dummyPlaylists } from "./utils/data";
+import Login from "./pages/Login";
+import Footer from "./components/Footer";
+import NotFound from "./components/NotFound";
+import NewPlaylist from "./pages/NewPlaylist";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface PlaylistsContextInterface {
+  playlists: PlaylistInterface[];
+  setPlaylists: React.Dispatch<React.SetStateAction<PlaylistInterface[]>>;
 }
 
-export default App
+export const PlaylistsContext = createContext<PlaylistsContextInterface>({
+  playlists: [],
+  setPlaylists: () => {},
+});
+
+const App = () => {
+  const [playlists, setPlaylists] = useState<PlaylistInterface[]>([]);
+
+  useEffect(() => {
+    console.log("Fetching the playlists...");
+    setTimeout(() => {
+      setPlaylists(dummyPlaylists);
+    }, 2000);
+  }, []);
+
+  return (
+    <PlaylistsContext.Provider value={{ playlists, setPlaylists }}>
+      <BrowserRouter>
+        <main className="main-content-container">
+        <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/playlist/:id" element={<Playlist />} />
+            <Route path="/playlist/new" element={<NewPlaylist />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<NotFound what="page" />} />
+          </Routes>
+        </main>
+        <Footer />
+      </BrowserRouter>
+    </PlaylistsContext.Provider>
+  );
+};
+
+export default App;
