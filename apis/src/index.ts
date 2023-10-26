@@ -19,7 +19,7 @@ app.use("/playlist", playlistRouter);
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
     console.log(req.baseUrl);
     if (req.baseUrl.includes("/api-docs")) return next();
-    res.status(StatusCodes.NOT_FOUND).json(new UnSuccessfulApiResponse(false, "No such route on this server."));
+    res.status(StatusCodes.NOT_FOUND).json(new UnSuccessfulApiResponse(false, "No such route on this server. Check /api-docs for documentation "));
 });
 
 new Swaggiffy().setupExpress(app).swaggiffy();
