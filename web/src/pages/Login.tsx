@@ -22,6 +22,7 @@ const Login = () => {
           title: "Done",
           text: "Logged In",
         }).then((_) => {
+        setLoading(false);
           navigate("/");
         });
       })
