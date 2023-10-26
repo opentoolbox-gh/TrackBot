@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { registerSchema } from "swaggiffy";
 
 
 const videoSchema = new Schema({
@@ -26,3 +27,5 @@ const videoSchema = new Schema({
 const VideoModel = model("Video", videoSchema);
 
 export default VideoModel
+
+registerSchema('Video', videoSchema, { orm: 'mongoose' });

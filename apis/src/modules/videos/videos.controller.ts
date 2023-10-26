@@ -19,9 +19,6 @@ const saveVideos = async (videosData: Video[], next: NextFunction) => {
         } catch (error) {
             reject(error);
         }
-    })
-    .catch((error) => {
-        next(createHttpError(new UnSuccessfulApiResponse(false, error.message)));
     });
 };
 
