@@ -5,6 +5,8 @@ import { SuccessfulApiResponse, UnSuccessfulApiResponse } from "../../helper/Api
 import Playlist from "../../interfaces/playlist.interface";
 import { saveVideos } from "../videos/videos.controller";
 import VideoModel from "../videos/video.model";
+import { playlistCreateSchema } from "./playlist.schema";
+import createHttpError from "http-errors";
 
 const getAllPlaylists = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -17,17 +19,29 @@ const getAllPlaylists = async (req: Request, res: Response, next: NextFunction) 
 }
 
 const createPlaylist = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, thumbnail, description, videos }: Playlist = req.body;
+
     try {
+
+        let { error, value } = await playlistCreateSchema.validateAsync(req.body);
+    
+        if (error) {
+            return res.status(StatusCodes.BAD_REQUEST).json(new UnSuccessfulApiResponse(false, `${error.details.message}`));
+        }
+    
+        let { name, thumbnail, description, videos } = value;    
+
         const videos_ids = await saveVideos(videos, next);
-        const newPlaylist = await PlaylistModel.create({name, thumbnail, description, videos: videos_ids});
+
+        const newPlaylist = await PlaylistModel.create({ name, thumbnail, description, videos: videos_ids });
+
         if (!newPlaylist) {
             return res.status(StatusCodes.BAD_REQUEST).json(new UnSuccessfulApiResponse(false, "Failed to save playlist"));
         }
+
         return res.status(StatusCodes.CREATED).json(new SuccessfulApiResponse(true, newPlaylist));
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new UnSuccessfulApiResponse(false, "An error occurred while creating the playlist"));
+        return res.status(StatusCodes.BAD_REQUEST).json(new UnSuccessfulApiResponse(false, `Unable to save playlist: ${error.message}`));
     }
 }
 
