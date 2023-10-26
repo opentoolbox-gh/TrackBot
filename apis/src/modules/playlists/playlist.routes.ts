@@ -11,4 +11,4 @@ playlistRouter.delete("/delete/:playlist_id", playlistController.deletePlaylist)
 
 export default playlistRouter
 
-registerDefinition(playlistRouter, { tags: 'Playlists', mappedSchema: 'Playlist', basePath: '/playlist' });
+registerDefinition(playlistRouter, { tags: 'Playlist', mappedSchema: 'Playlist', basePath: '/playlist' });

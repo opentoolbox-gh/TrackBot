@@ -16,7 +16,7 @@
       },
       "version": "1.0.0"
     },
-    "host": "localhost:5008",
+    "host": "localhost:2000",
     "basePath": "/",
     "schemes": [
       "http"
@@ -32,7 +32,7 @@
       "/playlist/all": {
         "get": {
           "tags": [
-            "Playlists"
+            "Playlist"
           ],
           "summary": "",
           "description": "",
@@ -78,7 +78,7 @@
       "/playlist/create": {
         "post": {
           "tags": [
-            "Playlists"
+            "Playlist"
           ],
           "summary": "",
           "description": "",
@@ -121,7 +121,7 @@
       "/playlist/get/{playlist_id}": {
         "get": {
           "tags": [
-            "Playlists"
+            "Playlist"
           ],
           "summary": "",
           "description": "",
@@ -174,7 +174,7 @@
       "/playlist/delete/{playlist_id}": {
         "delete": {
           "tags": [
-            "Playlists"
+            "Playlist"
           ],
           "summary": "",
           "description": "",
@@ -219,7 +219,63 @@
         }
       }
     },
-    "definitions": {}
+    "definitions": {
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "string"
+          },
+          "thumbnail": {
+            "type": "string",
+            "example": "string"
+          },
+          "description": {
+            "type": "string",
+            "example": "string"
+          },
+          "videos": {
+            "type": "array"
+          },
+          "_id": {
+            "type": "object"
+          },
+          "__v": {
+            "type": "number",
+            "example": 0
+          }
+        }
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "string"
+          },
+          "thumbnail": {
+            "type": "string",
+            "example": "string"
+          },
+          "title": {
+            "type": "string",
+            "example": "string"
+          },
+          "status": {
+            "type": "string",
+            "example": "string"
+          },
+          "_id": {
+            "type": "object"
+          },
+          "__v": {
+            "type": "number",
+            "example": 0
+          }
+        }
+      }
+    }
   },
   "apis": []
 }
