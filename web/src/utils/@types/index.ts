@@ -1,15 +1,15 @@
 export interface Playlist {
-    id: string;
-    title: string;
+    _id?: string;
+    name: string;
     description: string;
     thumbnail: string;
-    link: string;
+    link?: string;
     videos: Video[];
 }
 
 export interface Video {
     title: string;
-    link: string;
+    url: string;
     thumbnail: string;
     status?: "watched" | "watching" | "toWatch";
 }
