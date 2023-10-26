@@ -28,7 +28,7 @@ const Home = () => {
                   })}
             {
               // check if user is logged in
-              true && (
+              localStorage.getItem("currentUser") && (
                 <Link
                   to="/playlist/new"
                   className="max-w-sm w-full h-52 p-4 border border-gray-200 rounded shadow md:p-6 dark:border-gray-700 dark:text-white flex items-center justify-center flex-col cursor-pointer"

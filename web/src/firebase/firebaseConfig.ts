@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
   authDomain: import.meta.env.VITE_FIREBASE_APIDOMAIN,
@@ -9,28 +10,11 @@ const firebaseConfig = {
   measurementId: import.meta.env.MEASUREMENTID,
 };
 export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export default app;
 
 /* functions to be used to authenticate */
 
 
 // import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-// const auth = getAuth();
-// signInWithEmailAndPassword(auth, email, password)
-//   .then((userCredential) => {
-//     // Signed in 
-//     const user = userCredential.user;
-//     // ...
-//   })
-//   .catch((error) => {
-//     const errorCode = error.code;
-//     const errorMessage = error.message;
-//   });
-
-
-//   const auth = getAuth();
-// signOut(auth).then(() => {
-//   // Sign-out successful.
-// }).catch((error) => {
-//   // An error happened.
-// });

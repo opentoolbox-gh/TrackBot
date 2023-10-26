@@ -1,9 +1,47 @@
-import React, { FormEvent } from "react";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase/firebaseConfig";
+const MySwal = withReactContent(Swal);
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const handleOnSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+        localStorage.setItem("currentUser", JSON.stringify(userCredential));
+        setLoading(false);
+        MySwal.fire({
+          title: "Done",
+          text: "Logged In",
+        }).then((_) => {
+          navigate("/");
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        MySwal.fire({
+          title: errorCode,
+          text: errorMessage,
+        });
+      });
   };
+  const handleChange = (e: any) => {
+    if (e.target.name == "email") {
+      setEmail(e.target.value);
+    } else {
+      setPassword(e.target.value);
+    }
+  };
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900 h-[80vh]">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full lg:py-0">
@@ -32,9 +70,11 @@ const Login = () => {
                   Your email
                 </label>
                 <input
+                  onChange={handleChange}
                   type="email"
                   name="email"
                   id="email"
+                  value={email}
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   required
@@ -48,9 +88,11 @@ const Login = () => {
                   Password
                 </label>
                 <input
+                  onChange={handleChange}
                   type="password"
                   name="password"
                   id="password"
+                  value={password}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
@@ -61,7 +103,7 @@ const Login = () => {
                 type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Sign in
+                {!loading ? "Sign in" : "Loading..."}
               </button>
             </form>
           </div>
