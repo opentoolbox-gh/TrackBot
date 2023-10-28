@@ -9,12 +9,19 @@ import { Swaggiffy } from "swaggiffy";
 
 // Routes
 import playlistRouter from "./modules/playlists/playlist.routes";
+import slackRouter from "./modules/slack/slack.routes";
 
 database_connection();
 const app: Application = express();
-app.use(express.json()).use(cors()).use(morgan('tiny')).use(helmet());
+app
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .use(cors())
+  .use(morgan("tiny"))
+  .use(helmet());
 
 app.use("/playlist", playlistRouter);
+app.use("/slack", slackRouter);
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
     console.log(req.baseUrl);

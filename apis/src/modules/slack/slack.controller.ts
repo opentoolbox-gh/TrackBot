@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
+import VideoModel from "../videos/video.model";
+import axios from "axios";
+import handlers from "./slack.handlers";
 
 const handleSlackRequest = async (
   req: Request,
@@ -16,6 +19,117 @@ const handleSlackRequest = async (
   }
 };
 
+const handleDoneCommand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.status(StatusCodes.OK).send({
+      response_type: "ephimeral",
+      text: "Processing your request... Please wait!",
+    });
+    console.log(req.body);
+    const videosBeingWatched = await VideoModel.find({
+      status: "isWatching",
+    }).exec();
+    console.log(videosBeingWatched);
+    await axios.post(req.body.response_url, {
+      response_type: "ephimeral",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "*Which video(s) did you finish watching?*",
+          },
+          accessory: {
+            type: "checkboxes",
+            action_id: "video_selection",
+            options: [
+              ...videosBeingWatched.map((video) => ({
+                value: video._id,
+                text: {
+                  type: "plain_text",
+                  text: video.title,
+                },
+              })),
+            ],
+          },
+        },
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                text: "SAVE",
+                emoji: true,
+              },
+              style: "primary",
+              value: "video_selection_submit",
+              action_id: "video_selection_submit_btn",
+              confirm: {
+                title: {
+                  type: "plain_text",
+                  text: "Are you sure?",
+                },
+                text: {
+                  type: "mrkdwn",
+                  text: "Note that this action is irreversible.\nAre you sure you want to do this?",
+                },
+                confirm: {
+                  type: "plain_text",
+                  text: "Submit",
+                },
+                deny: {
+                  type: "plain_text",
+                  text: "Cancel",
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+  } catch (error: any) {
+    console.log(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal Server Error" });
+  }
+};
+
+const handleInteraction = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.status(StatusCodes.OK).send({
+      response_type: "ephimeral",
+      text: "OK",
+    });
+    console.log(JSON.stringify(JSON.parse(req.body.payload), null, 4));
+    const payload = JSON.parse(req.body.payload);
+    if (payload.type === "block_actions") {
+      for (const action of payload.actions) {
+        if (Object.keys(handlers).includes(action.action_id)) {
+          await handlers[action.action_id as string](payload, action);
+        }
+      }
+    }
+  } catch (error: any) {
+    console.log(error);
+    // res
+    //   .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    //   .json({ message: "Internal Server Error" });
+  }
+};
+
 export default {
   handleSlackRequest,
+  handleDoneCommand,
+  handleInteraction,
 };
