@@ -21,6 +21,10 @@ const videoSchema = new Schema({
         type: String,
         enum: ["watched", "isWatching", "toWatch"],
         default: "toWatch"
+    },
+    watchedBy: {
+        type: [String],
+        required: false
     }
 });
 

@@ -22,4 +22,21 @@ const saveVideos = async (videosData: Video[], next: NextFunction) => {
     });
 };
 
-export {saveVideos}
+const saveVideoWatchers = async (userId: string, videoId: string) => {
+    try {
+        const video = await VideoModel.findById(videoId);
+        if (!video) {
+            throw new Error(`Video with id ${videoId} was not found`);
+        }
+
+        video.watchedBy?.push(userId);
+
+        await video.save();
+
+        return video;
+    } catch (error: any) {
+        throw new Error(`Error occured: ${error.message}`);
+    }
+}
+
+export { saveVideos , saveVideoWatchers }

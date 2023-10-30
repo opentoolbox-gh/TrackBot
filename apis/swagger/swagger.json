@@ -419,6 +419,9 @@
             "type": "string",
             "example": "string"
           },
+          "watchedBy": {
+            "type": "array"
+          },
           "_id": {
             "type": "object"
           },
