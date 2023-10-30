@@ -8,4 +8,5 @@ export const videoSchema = Joi.object({
         .min(2)
         .max(100),
     status: Joi.string().valid('watched', 'isWatching', 'toWatch').default('toWatch'),
+    date: Joi.date().optional()
 });

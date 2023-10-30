@@ -25,6 +25,10 @@ const videoSchema = new Schema({
     watchedBy: {
         type: [String],
         required: false
+    },
+    date: {
+        type: Date,
+        required: false
     }
 });
 

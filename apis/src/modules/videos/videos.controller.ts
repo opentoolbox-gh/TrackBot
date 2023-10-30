@@ -54,4 +54,54 @@ const videoStatistics = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export { saveVideos , saveVideoWatchers, videoStatistics }
+const setTodaysVideo = async (req: Request, res: Response, next: NextFunction) => {
+    const video_id = req.params.video_id;
+    try {
+        const video = await VideoModel.findById(video_id);
+        if (!video) {
+            return res.status(StatusCodes.NOT_FOUND).json(new UnSuccessfulApiResponse(false, `Video with id ${video_id} was not found`));
+        }
+
+        video.date = new Date();
+        await video.save();
+
+        res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, video));
+
+    } catch (error: any) {
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new UnSuccessfulApiResponse(false, `Server failed to process this request: ${error?.message}`));
+    }
+}
+
+const getVideosForDate = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const requestedDate = req.params.date;
+        const date = new Date(requestedDate);
+
+        if (isNaN(date.getTime())) {
+            return res.status(StatusCodes.BAD_REQUEST).json(new UnSuccessfulApiResponse(false, 'Invalid date format'));
+        }
+
+        // Calculate the start and end of the requested date
+        const startDate = new Date(date); // start
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999); //end
+
+        const videos = await VideoModel.find({
+            date: {
+                $gte: startDate,
+                $lte: endDate,
+            }
+        });
+
+        res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, videos));
+    } catch (error: any) {
+        console.error(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new UnSuccessfulApiResponse(false, `Server failed to process this request: ${error?.message}`));
+    }
+}
+
+
+
+export { saveVideos , saveVideoWatchers, videoStatistics, setTodaysVideo, getVideosForDate }
