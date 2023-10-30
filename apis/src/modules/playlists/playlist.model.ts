@@ -1,7 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
 import { registerSchema } from "swaggiffy";
+import { PlaylistMongooseSchema } from "../../interfaces/playlist.interface";
 
-const playlistSchema = new Schema({
+const playlistSchema = new Schema<PlaylistMongooseSchema>({
     name: {
         type: String,
         required: true,

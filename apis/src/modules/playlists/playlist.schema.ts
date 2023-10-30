@@ -1,14 +1,5 @@
 import Joi from "joi";
-
-const videoSchema = Joi.object({
-    url: Joi.string().required(),
-    thumbnail: Joi.string().required(),
-    title: Joi.string()
-        .required()
-        .min(2)
-        .max(100),
-    status: Joi.string().valid('watched', 'isWatching', 'toWatch').default('toWatch'),
-});
+import { videoSchema } from "../videos/video.schema";
 
 const playlistCreateSchema = Joi.object({
     name: Joi.string()
@@ -20,6 +11,13 @@ const playlistCreateSchema = Joi.object({
     videos: Joi.array().items(videoSchema).required(),
 });
 
+const playlistUpdateSchema = Joi.object({
+    name: Joi.string().optional().min(2).max(100),
+    thumbnail: Joi.string().optional(),
+    description: Joi.string().optional(),
+});
+
 export {
-    playlistCreateSchema
+    playlistCreateSchema,
+    playlistUpdateSchema
 }
