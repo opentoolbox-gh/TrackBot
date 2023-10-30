@@ -10,6 +10,7 @@ import { Swaggiffy } from "swaggiffy";
 // Routes
 import playlistRouter from "./modules/playlists/playlist.routes";
 import slackRouter from "./modules/slack/slack.routes";
+import videoRouter from "./modules/videos/video.routes";
 
 database_connection();
 const app: Application = express();
@@ -22,6 +23,7 @@ app
 
 app.use("/playlist", playlistRouter);
 app.use("/slack", slackRouter);
+app.use("/video", videoRouter);
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
     console.log(req.baseUrl);

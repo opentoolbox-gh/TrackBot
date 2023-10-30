@@ -1,8 +1,9 @@
 import Video from "../../interfaces/video.interface";
 import VideoModel from "./video.model";
 import createHttpError from "http-errors";
-import { UnSuccessfulApiResponse } from "../../helper/ApiResponse.helper";
-import { NextFunction } from "express";
+import { SuccessfulApiResponse, UnSuccessfulApiResponse } from "../../helper/ApiResponse.helper";
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 const saveVideos = async (videosData: Video[], next: NextFunction) => {
     return new Promise(async (resolve, reject) => {
@@ -39,4 +40,18 @@ const saveVideoWatchers = async (userId: string, videoId: string) => {
     }
 }
 
-export { saveVideos , saveVideoWatchers }
+const videoStatistics = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user_id = req.params.user_id;
+        console.log(user_id)
+        const videosWatched = await VideoModel.find({
+            watchedBy: user_id
+        });
+        res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, videosWatched));
+    } catch (error: any) {
+        console.log(error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new UnSuccessfulApiResponse(false, `Server Failed to process this request: ${error?.message}`))
+    }
+}
+
+export { saveVideos , saveVideoWatchers, videoStatistics }
