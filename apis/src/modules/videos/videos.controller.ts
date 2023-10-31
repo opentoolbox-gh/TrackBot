@@ -57,19 +57,30 @@ const videoStatistics = async (req: Request, res: Response, next: NextFunction) 
 const setTodaysVideo = async (req: Request, res: Response, next: NextFunction) => {
     const video_id = req.params.video_id;
     try {
-        const video = await VideoModel.findById(video_id);
-        if (!video) {
-            return res.status(StatusCodes.NOT_FOUND).json(new UnSuccessfulApiResponse(false, `Video with id ${video_id} was not found`));
-        }
-
-        video.date = new Date();
-        await video.save();
+       const video =  _setTodaysVideo(video_id);
 
         res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, video));
 
     } catch (error: any) {
         console.error(error);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new UnSuccessfulApiResponse(false, `Server failed to process this request: ${error?.message}`));
+    }
+}
+
+const _setTodaysVideo = async (video_id: string) => {
+    try {
+        const video = await VideoModel.findById(video_id);
+        if (!video) {
+            throw new Error(`Video with id ${video_id} was not found`);
+        }
+
+        video.date = new Date();
+        await video.save();
+
+        return video;
+
+    } catch (error: any) {
+        throw new Error(`Error occured: ${error.message}`);
     }
 }
 

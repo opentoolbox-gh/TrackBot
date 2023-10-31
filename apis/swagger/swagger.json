@@ -579,7 +579,7 @@
           },
           "date": {
             "type": "string",
-            "example": "10/30/2023, 4:10:25 PM"
+            "example": "10/31/2023, 10:14:43 AM"
           },
           "_id": {
             "type": "object"
