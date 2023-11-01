@@ -1,4 +1,3 @@
-import React from "react";
 import { Video } from "../utils/@types";
 
 interface Props extends Video {

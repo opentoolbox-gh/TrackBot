@@ -1,4 +1,3 @@
-import React from "react";
 import { Playlist as PlaylistInterface } from "../utils/@types";
 import { Link } from "react-router-dom";
 
