@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import VideoModel from "../videos/video.model";
 import axios from "axios";
 import handlers from "./slack.handlers";
+import Video from "../../interfaces/video.interface";
 
 const handleSlackRequest = async (
   req: Request,
@@ -32,6 +33,7 @@ const handleDoneCommand = async (
     console.log(req.body);
     const videosBeingWatched = await VideoModel.find({
       status: "isWatching",
+      watchedBy: { $nin: [req.body.user_id] }
     }).exec();
     console.log(videosBeingWatched);
     await axios.post(req.body.response_url, {
@@ -101,6 +103,40 @@ const handleDoneCommand = async (
   }
 };
 
+const handleProgressCommand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.status(StatusCodes.OK).send({
+    response_type: "ephimeral",
+    text: "Processing your request... Please wait!",
+  });
+  try {
+    const { user_id } = req.body;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const videos = await VideoModel.find<Video>({
+      date: today,
+      // watchedBy: { $in: [user_id] }
+    }).exec();
+    const progress: {watched: Video[], not_watched: Video[]} = {
+      watched: [],
+      not_watched: [],
+    }
+    for(let video of videos) {
+      if(video.watchedBy?.includes(user_id)) {
+        progress.watched.push(video);
+      } else {
+        progress.not_watched.push(video);
+      }
+    }
+    handlers.send_progress(req.body.channel_id, req.body.user_id, progress);
+  } catch (e: any) {
+    console.log(e.message);
+  }
+};
+
 const handleInteraction = async (
   req: Request,
   res: Response,
@@ -131,5 +167,6 @@ const handleInteraction = async (
 export default {
   handleSlackRequest,
   handleDoneCommand,
+  handleProgressCommand,
   handleInteraction,
 };

@@ -11,7 +11,8 @@ export interface Video {
     title: string;
     url: string;
     thumbnail: string;
-    status?: "watched" | "watching" | "toWatch";
+    status?: "watched" | "isWatching" | "toWatch";
+    date?: Date;
 }
 
 export interface ScraperResponseVideo {
