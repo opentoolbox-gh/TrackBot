@@ -473,6 +473,49 @@
           ]
         }
       },
+      "/video/set-as-today": {
+        "put": {
+          "tags": [
+            "Video"
+          ],
+          "summary": "",
+          "description": "",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": false,
+              "schema": {
+                "$ref": "#/definitions/Video"
+              }
+            }
+          ],
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "201": {
+              "description": "Created",
+              "schema": {
+                "$ref": "#/definitions/Video"
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "security": [
+            {
+              "Bearer": [
+                "global"
+              ]
+            }
+          ]
+        }
+      },
       "/video/statistics/{date}": {
         "get": {
           "tags": [
@@ -579,7 +622,7 @@
           },
           "date": {
             "type": "string",
-            "example": "10/31/2023, 10:14:43 AM"
+            "example": "10/31/2023, 9:11:24 PM"
           },
           "_id": {
             "type": "object"

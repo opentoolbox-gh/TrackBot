@@ -27,7 +27,7 @@ const Playlist = () => {
   return (
     <div className="mid-center px-4 py-2">
       {selectedPlaylist === null ? (
-        <NotFound what="playlist"/>
+        <NotFound what="playlist" />
       ) : selectedPlaylist === undefined ? (
         <h1>Loading...</h1>
       ) : (
@@ -67,8 +67,39 @@ const Playlist = () => {
             <StatisticsModal />
           </div>
           <div className="flex flex-col gap-2 grow">
+            <button
+              type="button"
+              className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex gap-1 items-center mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-fit"
+              // data-modal-target="statisticsModal"
+              // data-modal-toggle="statisticsModal"
+            >
+              <svg
+                width={18}
+                height={20}
+                viewBox="0 0 18 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 18H2V7H16M13 0V2H5V0H3V2H2C0.89 2 0 2.89 0 4V18C0 18.5304 0.210714 19.0391 0.585786 19.4142C0.960859 19.7893 1.46957 20 2 20H16C16.5304 20 17.0391 19.7893 17.4142 19.4142C17.7893 19.0391 18 18.5304 18 18V4C18 3.46957 17.7893 2.96086 17.4142 2.58579C17.0391 2.21071 16.5304 2 16 2H15V0M14 11H9V16H14V11Z"
+                  fill="white"
+                />
+              </svg>
+              Update
+            </button>
             {selectedPlaylist.videos.map((el, i) => {
-              return <VideoCard {...el} key={i} />;
+              return <VideoCard {...el} key={i} onSelectedForToday={(selected) => {
+                setSelectedPlaylist((prev) => {
+                  if (prev === null || prev === undefined) {
+                    return prev;
+                  }
+                  const newPlaylist = {...prev};
+                  const date = new Date();
+                  date.setHours(0, 0, 0, 0)
+                  newPlaylist.videos[i].date = selected ? date : undefined;
+                  return newPlaylist;
+                });
+              }}/>;
             })}
           </div>
         </div>

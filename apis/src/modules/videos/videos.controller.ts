@@ -56,10 +56,18 @@ const videoStatistics = async (req: Request, res: Response, next: NextFunction) 
 
 const setTodaysVideo = async (req: Request, res: Response, next: NextFunction) => {
     const video_id = req.params.video_id;
-    try {
-       const video =  _setTodaysVideo(video_id);
+    const videos = req.body.videos ?? [];
 
-        res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, video));
+    try {
+        if (!video_id && !videos.length) throw new Error("Invalid request");
+        if (video_id) videos.push({ video_id, setAsToday: true });
+        const _videos = await Promise.all(
+          videos.map(async (video: {video_id: string; setAsToday: boolean}) => {
+            return await _setTodaysVideo(video.video_id, video.setAsToday);
+          })
+        );
+
+        res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, _videos));
 
     } catch (error: any) {
         console.error(error);
@@ -67,14 +75,14 @@ const setTodaysVideo = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
-const _setTodaysVideo = async (video_id: string) => {
+const _setTodaysVideo = async (video_id: string, setAsToday: boolean = true) => {
     try {
         const video = await VideoModel.findById(video_id);
         if (!video) {
             throw new Error(`Video with id ${video_id} was not found`);
         }
 
-        video.date = new Date();
+        video.date = setAsToday ? new Date() : undefined;
         await video.save();
 
         return video;
