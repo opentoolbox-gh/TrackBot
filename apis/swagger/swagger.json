@@ -622,7 +622,7 @@
           },
           "date": {
             "type": "string",
-            "example": "10/31/2023, 9:11:24 PM"
+            "example": "11/2/2023, 10:06:19 PM"
           },
           "_id": {
             "type": "object"

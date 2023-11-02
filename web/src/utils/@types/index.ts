@@ -8,6 +8,7 @@ export interface Playlist {
 }
 
 export interface Video {
+    _id?: string;
     title: string;
     url: string;
     thumbnail: string;

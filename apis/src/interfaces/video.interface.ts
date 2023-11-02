@@ -4,4 +4,5 @@ export default interface Video {
     title: String,
     status: String,
     watchedBy?: [String],
+    date?: Date;
 }
