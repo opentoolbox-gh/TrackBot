@@ -41,13 +41,14 @@ const VideoCard = (props: Props) => {
 
   return (
     <a
-      href={props.url}
+      // href={props.url}
+      href="#"
       className={
         "flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-2xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 relative " +
         props.className
       }
     >
-      {props.onSelectedForToday && (
+      {localStorage.getItem('currentUser') && props.status !== 'watched' && (
         <div className="absolute top-1 right-3">
           <input
             id="default-checkbox"
@@ -59,6 +60,7 @@ const VideoCard = (props: Props) => {
                   new Date().setHours(0, 0, 0, 0)
                 : false
             }
+            onChange={e => props.onSelectedForToday!(e.target.checked)}
           />
         </div>
       )}

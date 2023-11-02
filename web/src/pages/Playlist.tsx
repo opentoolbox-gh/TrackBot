@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PlaylistsContext } from "../App";
-import { Playlist as PlaylistInterface } from "../utils/@types";
+import { Playlist as PlaylistInterface, Video } from "../utils/@types";
 import NotFound from "../components/NotFound";
 import VideoCard from "../components/VideoCard";
 import StatisticsModal from "../components/StatisticsModal";
+import { axios } from "../utils/axios.config";
 
 interface RouteParams {
   id: string;
@@ -17,19 +18,61 @@ const Playlist = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
     PlaylistInterface | undefined | null
   >(undefined);
+  const [hasChange, setHasChange] = useState<boolean>(false);
 
   useEffect(() => {
     if (playlists) {
       const selectedPlaylist = playlists.find((el) => el._id === id) ?? null;
-      setSelectedPlaylist(selectedPlaylist);
+      if (selectedPlaylist) {
+        setSelectedPlaylist({
+          ...selectedPlaylist,
+          videos: selectedPlaylist.videos.map((video: Video) => {
+            if (video.date === undefined) return video;
+            const date = new Date(video.date).setHours(0, 0, 0, 0);
+            const today = new Date().setHours(0, 0, 0, 0);
+
+            return {
+              ...video,
+              status:
+                date === today
+                  ? "isWatching"
+                  : date < today
+                  ? "watched"
+                  : "toWatch",
+            };
+          }),
+        });
+      }
     }
   }, [id, playlists]);
+
+  const handleSubmitChanges = async () => {
+    try {
+      const requestBody = selectedPlaylist?.videos
+        .map((el) => {
+          if (el.status === "toWatch" && el.date !== undefined)
+            return { video_id: el._id, setAsToday: true };
+          if (el.status === "isWatching" && el.date === undefined)
+            return { video_id: el._id, setAsToday: false };
+          return null;
+        })
+        .filter((el) => el !== null);
+      const { data } = await axios.put("/video/set-as-today", {
+        videos: requestBody,
+      });
+      console.log(data);
+      window.location.reload();
+    } catch (error) {
+      console.log("Something went wrong.");
+    }
+  };
+
   return (
     <div className="mid-center px-4 py-2">
       {selectedPlaylist === null ? (
         <NotFound what="playlist" />
       ) : selectedPlaylist === undefined ? (
-        <h1>Loading...</h1>
+        <h1 className="dark:text-white">Loading...</h1>
       ) : (
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex flex-col  gap-4 w-full md:max-w-lg">
@@ -72,6 +115,14 @@ const Playlist = () => {
               className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex gap-1 items-center mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-fit"
               // data-modal-target="statisticsModal"
               // data-modal-toggle="statisticsModal"
+              disabled={!hasChange}
+              style={{
+                ...(!hasChange && {
+                  backgroundColor: "#777777",
+                  cursor: "not-allowed",
+                }),
+              }}
+              onClick={handleSubmitChanges}
             >
               <svg
                 width={18}
@@ -88,18 +139,25 @@ const Playlist = () => {
               Update
             </button>
             {selectedPlaylist.videos.map((el, i) => {
-              return <VideoCard {...el} key={i} onSelectedForToday={(selected) => {
-                setSelectedPlaylist((prev) => {
-                  if (prev === null || prev === undefined) {
-                    return prev;
-                  }
-                  const newPlaylist = {...prev};
-                  const date = new Date();
-                  date.setHours(0, 0, 0, 0)
-                  newPlaylist.videos[i].date = selected ? date : undefined;
-                  return newPlaylist;
-                });
-              }}/>;
+              return (
+                <VideoCard
+                  {...el}
+                  key={i}
+                  onSelectedForToday={(selected) => {
+                    setHasChange(true);
+                    setSelectedPlaylist((prev) => {
+                      if (prev === null || prev === undefined) {
+                        return prev;
+                      }
+                      const newPlaylist = { ...prev };
+                      const date = new Date();
+                      date.setHours(0, 0, 0, 0);
+                      newPlaylist.videos[i].date = selected ? date : undefined;
+                      return newPlaylist;
+                    });
+                  }}
+                />
+              );
             })}
           </div>
         </div>
