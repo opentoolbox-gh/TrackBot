@@ -1,1 +1,1 @@
-export const channel = "trackbot-testing";
+export const channel = process.env.NODE_ENV === 'production' ? 'cs-knowledge-for-all-of-us' : 'trackbot-testing';
