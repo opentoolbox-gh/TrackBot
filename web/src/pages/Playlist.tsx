@@ -19,6 +19,7 @@ const Playlist = () => {
     PlaylistInterface | undefined | null
   >(undefined);
   const [hasChange, setHasChange] = useState<boolean>(false);
+  const [statisticsModal, setStatisticsModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (playlists) {
@@ -96,8 +97,9 @@ const Playlist = () => {
             <button
               type="button"
               className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex gap-1 items-center mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-fit"
-              data-modal-target="statisticsModal"
-              data-modal-toggle="statisticsModal"
+              // data-modal-target="statisticsModal"
+              // data-modal-show="statisticsModal"
+              onClick={() => setStatisticsModal(true)}
             >
               <svg width={24} height={24} viewBox="0 0 24 24">
                 <path
@@ -107,7 +109,7 @@ const Playlist = () => {
               </svg>
               Statistics
             </button>
-            <StatisticsModal />
+            <StatisticsModal show={statisticsModal} onClose={() => setStatisticsModal(false)}/>
           </div>
           <div className="flex flex-col gap-2 grow">
             <button

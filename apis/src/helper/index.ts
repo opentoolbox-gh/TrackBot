@@ -1,0 +1,1 @@
+export const shallowCopy = (obj: Object) => JSON.parse(JSON.stringify(obj));

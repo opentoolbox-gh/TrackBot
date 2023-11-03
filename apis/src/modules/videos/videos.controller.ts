@@ -9,6 +9,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { slackClient } from "../slack/slack.routes";
 import { channel } from "../../helper/constants";
+import { shallowCopy } from "../../helper";
 
 const saveVideos = async (videosData: Video[], next: NextFunction) => {
   return new Promise(async (resolve, reject) => {
@@ -163,6 +164,44 @@ const _setTodaysVideo = async (
   }
 };
 
+const users: {
+  users: {
+    id: string;
+    profile: { real_name: string };
+  }[];
+  lastUpdated: Date;
+} = {
+  users: [],
+  lastUpdated: new Date(),
+};
+
+const findUsers = async () => {
+  const _users: any = await(
+    new Promise(async (resolve) => {
+      let next_cursor: string | undefined = undefined;
+      const arr = [];
+      while (true) {
+        const c: any = await slackClient.users.list({
+          ...(Boolean(next_cursor) && { cursor: next_cursor }),
+          limit: 30,
+        });
+
+        arr.push(...c.members);
+        if (!c.response_metadata?.next_cursor) {
+          resolve({ members: arr });
+          break;
+        }
+        next_cursor = c.response_metadata.next_cursor;
+        console.log("fetching more users...", next_cursor);
+      }
+    })
+  );
+  users.users = _users.members;
+  users.lastUpdated = new Date();
+}
+
+findUsers();
+
 const getVideosForDate = async (
   req: Request,
   res: Response,
@@ -184,11 +223,27 @@ const getVideosForDate = async (
     const endDate = new Date(date);
     endDate.setHours(23, 59, 59, 999); //end
 
-    const videos = await VideoModel.find({
+    let videos = await VideoModel.find<Video>({
       date: {
         $gte: startDate,
         $lte: endDate,
       },
+    }).exec();
+
+    if(!users.users.length || (new Date().getTime() - users.lastUpdated.getTime()) > 24 * 60 * 60 * 1000) {
+      // const usersList = await slackClient.users.list({limit: 400});
+      await findUsers();
+    }
+
+    videos = videos.map(shallowCopy).map((video: Video) => {
+      const watchedBy: string[] = video.watchedBy?.map((userId) => {
+        const user = users.users.find((u) => u.id === userId);
+        return user?.profile?.real_name || userId;
+      }) ?? [];
+      return {
+        ...video,
+        watchedBy,
+      };
     });
 
     res.status(StatusCodes.OK).json(new SuccessfulApiResponse(true, videos));

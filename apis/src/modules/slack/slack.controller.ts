@@ -32,13 +32,15 @@ const handleDoneCommand = async (
     });
     console.log(req.body);
     const videosBeingWatched = await VideoModel.find({
-      status: "isWatching",
+      // status: "isWatching",
+      date: new Date().setHours(0, 0, 0, 0),
       watchedBy: { $nin: [req.body.user_id] }
     }).exec();
     console.log(videosBeingWatched);
     if(videosBeingWatched.length) {
       await axios.post(req.body.response_url, {
         response_type: "ephimeral",
+        replace_original: true,
         blocks: [
           {
             type: "section",

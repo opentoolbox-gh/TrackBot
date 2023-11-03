@@ -1,8 +1,8 @@
 export default interface Video {
-    url: String,
-    thumbnail: String,
-    title: String,
-    status: String,
-    watchedBy?: [String],
+    url: string,
+    thumbnail: string,
+    title: string,
+    status: string,
+    watchedBy?: string[],
     date?: Date;
 }
