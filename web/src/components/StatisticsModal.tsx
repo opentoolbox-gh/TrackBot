@@ -1,4 +1,4 @@
-import { Modal, Datepicker, Badge } from "flowbite-react";
+import { Modal, Datepicker } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
 import { axios } from "../utils/axios.config";
 import { StatsResponse, Video } from "../utils/@types";
